@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #6c419a;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            
+        }
+        .container {
+            background-color: #220045;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0px 3px 1px rgba(0,0,0,0.8);
+            width: 28rem;
+            
+        }
+        h2 {
+            font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: 2.5rem;
+            text-align: center;
+            color: #ffffff;
+            
+        }
+        form {
+            margin-top: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+        input[type="text"], input[type="number"], input[type="email"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0 15px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background-color: #000282;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+            font-size: 100%;
+            font-weight: 800;
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+        }
+        #amount{
+            background-color: rgb(179, 179, 179);
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: rgb(45, 0, 0);
+        }
+        #name{
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: rgb(45, 0, 0);
+        }
+        #email{
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: rgb(45, 0, 0);
+        }
+        #pin{
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: rgb(45, 0, 0);
+        }
+        #mobile_number{
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: rgb(45, 0, 0);
+        }
+        #project_name{
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: rgb(45, 0, 0);
+        }
+        input[type="submit"]:hover {
+            background-color: #241fb3;
+        }
+        .link{
+            color: rgb(207, 207, 207);
+        }
+        .link:hover{
+            color: rgb(179, 0, 66);
+            
+        }
+        
+        .receipt {
+            display: none;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+        }
+       
+       
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        
+        
+        <h2>Make Payment</h2>
+        <form action="fetch_receipt.php" method="post" id="paymentForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+            
+            <label for="email">Email id:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email id" required>
+            
+            <label for="pin">Pin code:</label>
+            <input type="text" id="pin" name="pin" placeholder="Enter your Pin code" maxlength="6" required>
+            
+            <label for="mobile_number">Mobile Number:</label>
+            <input type="text" id="mobile_number" name="mobile_number" placeholder="Enter your mobile number" maxlength="10" required>
+            
+            <label for="project_name">Project Name:</label>
+            <input type="text" id="project_name" name="project_name" placeholder="Enter the Project name">
+            
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" placeholder="Enter amount" value="9.00" readonly required>
+            
+            <input type="submit" value="Pay Now">
+
+            <div>
+                <input type="checkbox" name="agree" id="afree" required> <a class="link" href="Terms and Conditions.txt" target="_blank">Terms and Conditions</a> <br>
+            </div>
+            <!-- Privacy Policy -->
+            <div>
+                <input type="checkbox" name="agree" id="afree" required> <a class="link" href="Privacy Policy.txt" target="_blank">Privacy Policy</a><br>
+            </div>
+            <div>
+               <!-- Refunds/Cancellations -->
+               <input type="checkbox" name="agree" id="afree" required>  <a class="link" href="Refund Policy.txt" target="_blank">Refunds/Cancellations Policy</a>
+            </div>
+        </form>
+        <div class="receipt" id="receipt">
+            <!-- Receipt will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        var form = document.getElementById('paymentForm');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            var options = {
+                "key": "rzp_test_RPstAQBQUlZ0X3", // Replace with your Razorpay Key
+                "amount": document.getElementById('amount').value * 100, // Amount is in currency subunits. 100 refers to 100 paise or 1 Rupee.
+                "currency": "INR", // You can change the currency according to your preference.
+                "name": "Sumit Kumar",
+                "description": "Education",
+                "handler": function (response){
+                    // After successful payment, fetch the receipt from the server
+                    fetchReceipt(response.razorpay_payment_id);
+                },
+                "prefill": {
+                    "name": document.getElementById('name').value,
+                    "email": document.getElementById('email').value, // you can pass email here
+                    "contact": document.getElementById('mobile_number').value,
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+        });
+
+        function fetchReceipt(payment_id) {
+            fetch('https://sumitk009.github.io/Payment//fetch_receipt.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ payment_id: payment_id }),
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Open a new window with the receipt content
+                var receiptWindow = window.open('', '_blank');
+                receiptWindow.document.write(data);
+                // Wait for the content to load before triggering print
+                receiptWindow.addEventListener('load', function() {
+                    receiptWindow.print();
+                });
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

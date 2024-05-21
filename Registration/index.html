@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeNest</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <form method="post" name="google-sheet" id="registration-form">
+      <h2>Registration</h2>
+        <input type="text" name="name" id="name" placeholder="Full Name" required>
+        <input type="text" name="address" id="address" placeholder="Current address" required>
+        <input type="email" name="email" id="email" placeholder="Email id" required>
+        <input type="text" name="mobile" id="mobile" placeholder="Mobile no." maxlength="10" required>
+        <input type="password" name="password" id="password" placeholder="Password" required>
+        
+        <!-- Hidden fields for date and time -->
+        <input type="hidden" name="date" id="date">
+        <input type="hidden" name="time" id="time">
+
+        <input type="submit" value="Submit">
+        
+    </form>
+    
+    <div id="success-message" class="hidden">
+        <h1>Thank you,</h1>
+        <h4>Your registration is successful!</h4>
+        <div>
+           <p>If the information provided holds true, rest assured, our company will promptly reach out to you via Mail or SMS.</p>
+           <a href="https://sumitk009.github.io/CodeNest./">Home</a>
+        </div>
+       
+    </div>
+</div>
+<script src="script.js"></script>
+
+
+</body>
+</html>
